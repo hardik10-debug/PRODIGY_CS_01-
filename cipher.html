@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Encryption/Decryption</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #101820;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: whitesmoke;
+}
+
+form {
+    background-color:  #FEE715;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+input[type="submit"] {
+    background-color: #101820;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+}
+
+input[type="submit"]:hover {
+    background-color: red;
+    transform: scale(1.1);
+}
+
+.result {
+    background-color: #FEE715;
+    color: #101820;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    
+}
+
+    </style>
+</head>
+<body>
+    <h1>Encryption/Decryption</h1>
+    <form method="post">
+        <label for="user_input">Choose an option:</label>
+        <select id="user_input" name="user_input">
+            <option value="encrypt">Encrypt</option>
+            <option value="decrypt">Decrypt</option>
+        </select>
+        <br><br>
+        <label for="text">Enter your message:</label>
+        <textarea id="text" name="text"></textarea>
+        <br><br>
+        <label for="shift">Enter shift key:</label>
+        <input type="number" id="shift" name="shift">
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+    {% if result %}
+        <h2>Result:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+    
+    <script>  
+    document.addEventListener('DOMContentLoaded', function() {
+        var userInput = document.getElementById('user_input');
+        var textInput = document.getElementById('text');
+        var shiftInput = document.getElementById('shift');
+        var submitButton = document.querySelector('input[type="submit"]');
+
+        submitButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            var selectedOption = userInput.value;
+            var text = textInput.value;
+            var shift = parseInt(shiftInput.value);
+
+            if (isNaN(shift) || shift < 0) {
+                alert('Please enter a valid positive number for the shift key.');
+                return;
+            }
+
+            var result;
+            if (selectedOption === 'encrypt') {
+                result = encryption(text, shift);
+            } else if (selectedOption === 'decrypt') {
+                result = decryption(text, shift);
+            }
+
+            // Display the result
+            var resultElement = document.createElement('div');
+            resultElement.classList.add('result');
+            resultElement.textContent = 'Result: ' + result;
+
+            var formElement = document.querySelector('form');
+            formElement.insertAdjacentElement('afterend', resultElement);
+        });
+    });
+
+    function encryption(plainText, shiftKey) {
+    var cipher_text = "";
+    var alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    for (var i = 0; i < plainText.length; i++) {
+        var char = plainText[i].toLowerCase();
+        if (alphabet.includes(char)) {
+            var position = alphabet.indexOf(char);
+            var new_position = (position + shiftKey) % 26;
+            cipher_text += alphabet[new_position];
+        } else {
+            cipher_text += char;
+        }
+    }
+
+    return cipher_text;
+}
+
+function decryption(cipherText, shiftKey) {
+    var plain_text = "";
+    var alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    for (var i = 0; i < cipherText.length; i++) {
+        var char = cipherText[i].toLowerCase();
+        if (alphabet.includes(char)) {
+            var position = alphabet.indexOf(char);
+            var new_position = (position - shiftKey) % 26;
+            if (new_position < 0) {
+                new_position += 26;
+            }
+            plain_text += alphabet[new_position];
+        } else {
+            plain_text += char;
+        }
+    }
+
+    return plain_text;
+}
+</script>
+</body>
+</html>

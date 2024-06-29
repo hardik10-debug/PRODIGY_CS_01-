@@ -8,3 +8,4 @@ pip install flask
 Remember to keep cipher.html file in a folder named "templates" in your python workspace
 python cipher.py  //command in terminal
 Open a web browser and go to http://localhost:5000.
+To see the output refer the "output video" file
